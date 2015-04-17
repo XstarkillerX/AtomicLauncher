@@ -50,5 +50,6 @@ x86/
 build/
 bld/
 libs/
+gen/
 [Bb]in/
 [Oo]bj/
