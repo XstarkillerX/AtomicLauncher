@@ -137,14 +137,14 @@ static void Gui$Gui_hook(Gui* gui, MinecraftClient* mc) {
 	minecraftClient = mc;
 }
 
-static void(*CreativeInventoryScreen$populateItem_real)(Item*, int, int);
+/*static void(*CreativeInventoryScreen$populateItem_real)(Item*, int, int);
 static void CreativeInventoryScreen$populateItem_hook(Item* item, int count, int damage) {
 	CreativeInventoryScreen$populateItem_real(item, count, damage);
 	if(item == Item::items[383] && damage == 40) {
 		CreativeInventoryScreen$populateItem_real(Item::items[383], 1, 41);
 		CreativeInventoryScreen$populateItem_real(Item::items[383], 1, 42);
 	}
-}
+}*/
 
 JNIEXPORT jint JNICALL Java_net_zhuoweizhang_pokerface_PokerFace_mprotect(JNIEnv* env, jclass clazz, jlong addr, jlong len, jint prot) {
 	return mprotect((void *)(uintptr_t) addr, len, prot);
@@ -165,7 +165,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	MSHookFunction((void*) &mouseDown, (void*) &mouseDown_hook, (void**) &mouseDown_real);
 	MSHookFunction((void*) &Gui::render, (void*) &Gui$render_hook, (void**) &Gui$render_real);
 	MSHookFunction((void*) &Level::onSourceCreated, (void*) &Level$onSourceCreated_hook, (void**) &Level$onSourceCreated_real);
-	MSHookFunction((void*) CreativeInventoryScreen::populateItem, (void*) &CreativeInventoryScreen$populateItem_hook, (void**) &CreativeInventoryScreen$populateItem_real);
+	//MSHookFunction((void*) CreativeInventoryScreen::populateItem, (void*) &CreativeInventoryScreen$populateItem_hook, (void**) &CreativeInventoryScreen$populateItem_real);
 	
 	return JNI_VERSION_1_2;
 }
