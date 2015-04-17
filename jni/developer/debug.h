@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AL_DEBUG
+#define AL_DEBUG
 
 #include <string>
 #include "mcpe.h"
@@ -19,3 +20,4 @@ namespace debug{
 		TileSource* currentTS;
 	}
 }
+#endif
