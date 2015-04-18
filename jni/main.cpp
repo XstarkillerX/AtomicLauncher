@@ -11,76 +11,11 @@
 #include <iomanip>
 #include <cmath>
 #include "shared.h"
-#include "mcpe.h"
+#include "developer/mcpe.h"
+#include "developer/debug.h"
 
-std::string getDebugVersionString() {
-	return "Minecraft Pocket Edition " + Common::getGameVersionString();
-}
+debug::debugMenu debugMenuHandle;
 
-std::string getDebugCoordsString() {
-	std::stringstream coords;
-	float x = currentLevel->getLocalPlayer()->x;
-	float y = currentLevel->getLocalPlayer()->y;
-	float z = currentLevel->getLocalPlayer()->z;
-	coords << "XYZ: " << x << " / " << y << " / " << z;
-	return coords.str();
-}
-
-std::string getDebugBlockCoordsString() {
-	std::stringstream blockCoords;
-	int x = currentLevel->getLocalPlayer()->x;
-	int y = currentLevel->getLocalPlayer()->y;
-	int z = currentLevel->getLocalPlayer()->z;
-	blockCoords << "Block: " << x << " " << y << " " << z;
-	return blockCoords.str();
-}
-
-std::string getDebugChunkCoordsString() {
-	std::stringstream chunkCoords;
-	int x = currentLevel->getLocalPlayer()->x;
-	int y = currentLevel->getLocalPlayer()->y;
-	int z = currentLevel->getLocalPlayer()->z;
-	chunkCoords << "Chunk: " << (x & 0xf) << " " << (y & 0xf) << " " << (z & 0xf) << " in " << x / 16 << " " << y / 16 << " " << z / 16;
-	return chunkCoords.str();
-}
-
-std::string getDebugFacingString() {
-	std::stringstream facing;
-	double rotX = currentLevel->getLocalPlayer()->rotX;
-	rotX = (floor(rotX * 10 + 0.5)) / 10;
-	double rotY = currentLevel->getLocalPlayer()->rotY;
-	rotY = (floor(rotY * 10 + 0.5)) / 10;
-	std::string compassFacing;
-	if(rotX >= 0) rotX = fmod(rotX, 360);
-	if(rotX > 0) {
-		if(rotX > 315 || rotX < 45) compassFacing = "South (Towards positive Z) ";
-		else if(rotX > 45 && rotX < 135) compassFacing = "West (Towards negative X) ";
-		else if(rotX > 135 && rotX < 225) compassFacing = "North (Towards negative Z) ";
-		else if(rotX > 225 && rotX < 315) compassFacing = "East (Towards positive X) ";
-	} else {
-		if((360 + rotX) > 315 || (360 + rotX) < 45) compassFacing = "South (Towards positive Z) ";
-		else if((360 + rotX) > 45 && (360 + rotX) < 135) compassFacing = "West (Towards negative X) ";
-		else if((360 + rotX) > 135 && (360 + rotX) < 225) compassFacing = "North (Towards negative Z) ";
-		else if((360 + rotX) > 225 && (360 + rotX) < 315) compassFacing = "East (Towards positive X) ";
-	}
-	facing << "Facing: " << compassFacing << "(" << rotX  << " / " << rotY << ")";
-	return facing.str();
-}
-
-std::string getDebugBiomeString() {
-	TilePos coords = *new TilePos(currentLevel->getLocalPlayer()->x, currentLevel->getLocalPlayer()->y, currentLevel->getLocalPlayer()->z);
-	return "Biome: " + biomeTypeNames[tileSource->getBiome(coords)->getBiomeType()];
-}
-
-std::string getDebugLightString() {
-	std::stringstream light;
-	TilePos coords(currentLevel->getLocalPlayer()->x, currentLevel->getLocalPlayer()->y, currentLevel->getLocalPlayer()->z);
-	int skyLight = tileSource->getBrightness(LightLayer::Sky, coords);
-	int blockLight = tileSource->getBrightness(LightLayer::Block, coords);
-	int totalLight = (skyLight + blockLight <= 15) ? skyLight + blockLight : 15;
-	light << "Light: " << totalLight << " (" << skyLight << " sky, " << blockLight << " block)";
-	return light.str();
-}
 
 static void (*Gui$render_real)(Gui*, float, bool, int, int);
 static void Gui$render_hook(Gui* gui, float a, bool b, int c, int d) {
@@ -88,12 +23,12 @@ static void Gui$render_hook(Gui* gui, float a, bool b, int c, int d) {
 	
 	if(debug) {
 		int pxY = 1;
-		font->drawTransformed(getDebugVersionString(), 1, pxY, Color::WHITE, 0, font->getLineLength(getDebugVersionString()), false, 0.8f);
-		font->drawTransformed(getDebugCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(getDebugCoordsString()), false, 0.8f);
-		font->drawTransformed(getDebugBlockCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(getDebugBlockCoordsString()), false, 0.8f);
-		font->drawTransformed(getDebugChunkCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(getDebugChunkCoordsString()), false, 0.8f);
-		font->drawTransformed(getDebugFacingString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(getDebugFacingString()), false, 0.8f);
-		font->drawTransformed(getDebugBiomeString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(getDebugBiomeString()),  false, 0.8f);
+		font->drawTransformed(debugMenu.getVersionString(), 1, pxY, Color::WHITE, 0, font->getLineLength(debugMenu.getVersionString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu.getCoordsString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getBlockCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu.getBlockCoordsString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getChunkCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu.getChunkCoordsString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getFacingString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu.getFacingString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getBiomeString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu.getBiomeString()), false, 0.8f);
 		//font->drawTransformed(getDebugLightString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(getDebugLightString()), false, 0.8f);
 	}
 	if(!debugButton) {
@@ -127,8 +62,8 @@ static void Font$Font_hook(Font* fnt, Options* op, std::string const& str, Textu
 static void (*Level$onSourceCreated_real)(Level*, TileSource*);
 static void Level$onSourceCreated_hook(Level* lvl, TileSource* ts) {
 	Level$onSourceCreated_real(lvl, ts);
-	currentLevel = lvl;
-	tileSource = ts;
+	//currentLevel = lvl;
+	debugMenuHandle = debug::debugMenu(lvl, ts);
 }
 
 static void (*Gui$Gui_real)(Gui*, MinecraftClient*);
