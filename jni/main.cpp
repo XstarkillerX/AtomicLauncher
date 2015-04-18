@@ -63,7 +63,7 @@ static void (*Level$onSourceCreated_real)(Level*, TileSource*);
 static void Level$onSourceCreated_hook(Level* lvl, TileSource* ts) {
 	Level$onSourceCreated_real(lvl, ts);
 	//currentLevel = lvl;
-	debugMenu = debug::debugMenu(lvl, ts);
+	debugMenuHandle = debug::debugMenu(lvl, ts);
 }
 
 static void (*Gui$Gui_real)(Gui*, MinecraftClient*);
