@@ -2,4 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 	<string name="title_activity_mcpemain">AtomicLauncher</string>
 	<string name="app_name">AtomicLauncher</string>
+	<string name="permdesc_atomiclauncher_addon">Load this app as an addon for AtomicLauncher</string>
+	<string name="permlab_atomiclauncher_addon">AtomicLauncher Addon</string>
 </resources>

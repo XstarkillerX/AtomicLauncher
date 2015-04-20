@@ -23,7 +23,6 @@ import java.text.*;
 import java.util.*;
 import net.yosi.isageek.atomiclauncher.*; // import ALL the things
 
-
 public class MainActivity extends NativeActivity {
 
 	PackageInfo packageInfo;
@@ -35,6 +34,7 @@ public class MainActivity extends NativeActivity {
 	DisplayMetrics metrics;
 
 	boolean mcpePackage = false;
+	Set<String> loadedAddons = new HashSet<String>();
 
 	public static ByteBuffer minecraftLibBuffer = null;
 	public static MainActivity activity = null;
@@ -71,9 +71,8 @@ public class MainActivity extends NativeActivity {
 			super.onCreate(savedInstanceState);
 
 			try {
-
 				NativeHandler.init();
-
+				loadNativeAddons();
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
@@ -94,6 +93,27 @@ public class MainActivity extends NativeActivity {
 			finish();
 		}
 
+	}
+
+	protected void loadNativeAddons() {
+		PackageManager pm = getPackageManager();
+		List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA | PackageManager.GET_SHARED_LIBRARY_FILES);
+		for (ApplicationInfo app : apps) {
+			Log.i("AtomicLauncher", app.packageName);
+			if(app.metaData != null && app.metaData.containsKey("net.yosi.isageek.atomiclauncher.api.nativelibname")) {
+				String nativeLibName = app.metaData.getString("net.yosi.isageek.atomiclauncher.api.nativelibname");
+				Log.i("AtomicLauncher", nativeLibName);
+				if (nativeLibName != null && pm.checkPermission("net.yosi.isageek.atomiclauncher.ADDON", app.packageName) == PackageManager.PERMISSION_GRANTED) {
+					Log.i("AtomicLauncher", "Load: " + app.nativeLibraryDir + "/lib" + nativeLibName + ".so");
+					try {
+						System.load(app.nativeLibraryDir + "/lib" + nativeLibName + ".so");
+						loadedAddons.add(app.packageName);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -740,5 +760,4 @@ public class MainActivity extends NativeActivity {
   	public void createAlertDialog(boolean hasOk, boolean hasCancel, boolean modal) {
   		System.out.println("createAlertDialog: hasOk: "+hasOk+"; hasCancel: "+hasCancel+"; modal:"+modal);
   	}
-  	
 }
