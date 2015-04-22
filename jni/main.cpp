@@ -13,6 +13,8 @@
 #include "shared.h"
 #include "mcpe.h"
 
+const int ALVERSION = 1.03;
+
 std::string getDebugVersionString() {
 	return "Minecraft Pocket Edition " + Common::getGameVersionString();
 }
@@ -146,6 +148,11 @@ static void CreativeInventoryScreen$populateItem_hook(Item* item, int count, int
 	}
 }
 
+static std::string(*getGameVersionString_orig)();
+static std::string getGameVersionString_detour(){
+	return "AtomicLauncher v" + static_cast<std::string>(ALVERSION);
+}
+
 JNIEXPORT jint JNICALL Java_net_zhuoweizhang_pokerface_PokerFace_mprotect(JNIEnv* env, jclass clazz, jlong addr, jlong len, jint prot) {
 	return mprotect((void *)(uintptr_t) addr, len, prot);
 }
@@ -160,6 +167,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	
 	void* Font$$Font = dlsym(handle, "_ZN4FontC1EP7OptionsRKSsP8Textures");
 	void* Gui$$Gui = dlsym(handle, "_ZN3GuiC2ER15MinecraftClient");
+	void* Common$$getGameVersionString = dlsym(handle,"_ZN6Common20getGameVersionStringEv");
 	MSHookFunction(Font$$Font, (void*) &Font$Font_hook, (void**) &Font$Font_real);
 	MSHookFunction(Gui$$Gui, (void*) &Gui$Gui_hook, (void**) &Gui$Gui_real);
 	MSHookFunction((void*) &mouseDown, (void*) &mouseDown_hook, (void**) &mouseDown_real);
