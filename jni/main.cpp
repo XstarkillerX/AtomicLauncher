@@ -172,6 +172,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
 	MSHookFunction(Gui$$Gui, (void*) &Gui$Gui_hook, (void**) &Gui$Gui_real);
 	MSHookFunction((void*) &mouseDown, (void*) &mouseDown_hook, (void**) &mouseDown_real);
 	MSHookFunction((void*) &Gui::render, (void*) &Gui$render_hook, (void**) &Gui$render_real);
+	MSHookFunction(Common$$getGameVersionString, reinterpret_cast<void*>(&getGameVersionString_detour), reinterpret_cast<void**>(getGameVersionString_orig));
 	MSHookFunction((void*) &Level::onSourceCreated, (void*) &Level$onSourceCreated_hook, (void**) &Level$onSourceCreated_real);
 	//MSHookFunction((void*) CreativeInventoryScreen::populateItem, (void*) &CreativeInventoryScreen$populateItem_hook, (void**) &CreativeInventoryScreen$populateItem_real);
 	
