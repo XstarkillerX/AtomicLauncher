@@ -160,5 +160,5 @@ public:
 
 class CreativeInventoryScreen {
 public:
-	static void populateItem(Item*, int, int);
+	//static void populateItem(Item*, int, int);
 };
