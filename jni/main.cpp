@@ -14,7 +14,7 @@
 #include "mcpe.h"
 #include "debugmenu/DebugMenu.h"
 
-const int ALVERSION = "1.03";
+const std::string ALVERSION = "1.03";
 
 DebugMenu debugMenu;
 
