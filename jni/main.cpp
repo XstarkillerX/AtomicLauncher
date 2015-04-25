@@ -16,20 +16,20 @@
 
 const std::string ALVERSION = "1.03";
 
-DebugMenu debugMenu;
+Debug::DebugMenu debugMenu;
 
 static void Gui$render_hook(Gui* gui, float a, bool b, int c, int d) {
 	Gui$render_real(gui, a, b, c, d);
 	
 	if(debug) {
 		int pxY = 1;
-		font->drawTransformed(debugMenu->getVersionString(), 1, pxY, Color::WHITE, 0, font->getLineLength(debugMenu->getVersionString()), false, 0.8f);
-		font->drawTransformed(debugMenu->getCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getCoordsString()), false, 0.8f);
-		font->drawTransformed(debugMenu->getBlockCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getBlockCoordsString()), false, 0.8f);
-		font->drawTransformed(debugMenu->getChunkCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getChunkCoordsString()), false, 0.8f);
-		font->drawTransformed(debugMenu->getFacingString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getFacingString()), false, 0.8f);
-		font->drawTransformed(debugMenu->getBiomeString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenugetBiomeString()),  false, 0.8f);
-		//font->drawTransformed(debugMenu->getLightString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getLightString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getVersionString(), 1, pxY, Color::WHITE, 0, font->getLineLength(debugMenu->getVersionString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getCoordsString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getBlockCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getBlockCoordsString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getChunkCoordsString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getChunkCoordsString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getFacingString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getFacingString()), false, 0.8f);
+		font->drawTransformed(debugMenu.getBiomeString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenugetBiomeString()),  false, 0.8f);
+		//font->drawTransformed(debugMenu.getLightString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getLightString()), false, 0.8f);
 	}
 	if(!debugButton) {
 		debugButton = new Button(0, "F3", false);
@@ -62,13 +62,13 @@ static void Font$Font_hook(Font* fnt, Options* op, std::string const& str, Textu
 static void (*Level$onSourceCreated_real)(Level*, TileSource*);
 static void Level$onSourceCreated_hook(Level* lvl, TileSource* ts) {
 	Level$onSourceCreated_real(lvl, ts);
-	debugMenu(lvl, ts);
+	debugMenu = Debug::DebugMenu(lvl, ts);
 }
 
 static void (*Gui$Gui_real)(Gui*, MinecraftClient*);
 static void Gui$Gui_hook(Gui* gui, MinecraftClient* mc) {
 	Gui$Gui_real(gui, mc);
-	minecraftClient = mc;
+	minecraftClient = mc;debu
 }
 
 static void(*CreativeInventoryScreen$populateItem_real)(Item*, int, int);
