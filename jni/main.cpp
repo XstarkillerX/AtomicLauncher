@@ -31,20 +31,12 @@ static void Gui$render_hook(Gui* gui, float a, bool b, int c, int d) {
 		font->drawTransformed(debugMenu.getBiomeString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenugetBiomeString()),  false, 0.8f);
 		//font->drawTransformed(debugMenu.getLightString(), 1, pxY += 8, Color::WHITE, 0, font->getLineLength(debugMenu->getLightString()), false, 0.8f);
 	}
-	if(!debugButton) {
-		debugButton = new Button(0, "F3", false);
-		debugButton->x = AppPlatform::getScreenWidth() / AppPlatform::getPixelsPerMillimeter() * 3 + 25;
-		debugButton ->y = 1;
-		debugButton->width = 18;
-		debugButton ->height = 18;
-	}
-	debugButton->render(minecraftClient, 0, 0);
+	
 }
 
 static void (*mouseDown_real)(int, int, int);
 static void mouseDown_hook(int idk, int x, int y) {
 	mouseDown_real(idk, x, y);
-	if(debugButton && debugButton->isInside(x / 4, y / 4)) debug = !debug;
 }
 
 static void (*MinecraftClient$leaveGame_real)(MinecraftClient*, bool, bool);
